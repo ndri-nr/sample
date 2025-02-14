@@ -1,26 +1,30 @@
 package com.example.demo_ikon.controller;
 
 import com.example.demo_ikon.model.dto.PaginationDto;
+import com.example.demo_ikon.model.response.BaseResponse;
 import com.example.demo_ikon.model.response.DataGatherResponse;
 import com.example.demo_ikon.model.response.PaginationResponse;
 import com.example.demo_ikon.service.DataGatherService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("/data")
 public class DataGatheringController {
 
-    @Autowired
     private final DataGatherService dataGatherService;
 
-    @GetMapping("/")
-    public PaginationResponse<DataGatherResponse> getData(@RequestBody PaginationDto dto) {
-        return dataGatherService.getData(dto);
+    @PostMapping("")
+    public BaseResponse<PaginationResponse<DataGatherResponse>> getData(
+            @Valid @RequestBody PaginationDto dto
+    ) {
+        return BaseResponse.<PaginationResponse<DataGatherResponse>>builder()
+                .message(HttpStatus.OK.name())
+                .status(HttpStatus.OK.value())
+                .data(dataGatherService.getData(dto))
+                .build();
     }
 }
